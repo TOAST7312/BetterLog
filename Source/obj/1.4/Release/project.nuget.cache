@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "jnS2CZErYFg=",
+  "success": true,
+  "projectFilePath": "D:\\Games & Programs\\Steam\\steamapps\\workshop\\content\\294100\\2772559481\\Source\\1.4.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dcbus\\.nuget\\packages\\krafs.publicizer\\2.3.0\\krafs.publicizer.2.3.0.nupkg.sha512",
+    "C:\\Users\\dcbus\\.nuget\\packages\\krafs.rimworld.ref\\1.4.3901\\krafs.rimworld.ref.1.4.3901.nupkg.sha512",
+    "C:\\Users\\dcbus\\.nuget\\packages\\lib.harmony\\2.2.2\\lib.harmony.2.2.2.nupkg.sha512",
+    "C:\\Users\\dcbus\\.nuget\\packages\\polysharp\\1.15.0\\polysharp.1.15.0.nupkg.sha512",
+    "C:\\Users\\dcbus\\.nuget\\packages\\zetrith.prepatcher\\1.2.0\\zetrith.prepatcher.1.2.0.nupkg.sha512"
+  ],
+  "logs": []
+}

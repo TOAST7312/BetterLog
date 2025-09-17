@@ -56,7 +56,7 @@ public class Settings : ModSettings
 		=> _allColors
 			??= DefDatabase<ColorDef>.AllDefsListForReading.Select(static def => def.color)
 				.Union(typeof(ColorLibrary).GetFields(AccessTools.allDeclared)
-					.Select(static field => (Color)field.GetValue(null)))
+					.Select(static fieldInfo => (Color)fieldInfo.GetValue(null!)))
 				.Union(new[] { Color.red, Color.yellow, Color.white }).ToList();
 
 	public override void ExposeData()

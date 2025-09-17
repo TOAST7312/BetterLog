@@ -1,0 +1,10 @@
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.csproj.AssemblyReference.cache
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.GeneratedMSBuildEditorConfig.editorconfig
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.AssemblyInfoInputs.cache
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.AssemblyInfo.cs
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.csproj.CoreCompileInputs.cache
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\1.6\Assemblies\BetterLog.dll
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\1.6\Assemblies\BetterLog.pdb
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\1.6.csproj.Up2Date
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\BetterLog.dll
+D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Release\Release\net48\BetterLog.pdb

@@ -275,9 +275,40 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes)
 		{
 #if V1_6
-			return codes.Replace(static code => code.operand is 1000, static code => FishTranspiler
-				.PropertyGetter(typeof(Settings), nameof(Settings.LoggingLimit))
-				.WithLabelsAndBlocks(code));
+			try
+			{
+				// Use a more robust approach - check if the method exists and has the expected structure
+				var codeList = codes.ToList();
+				bool found = false;
+				
+				for (int i = 0; i < codeList.Count; i++)
+				{
+					// Look for ldc.i4 instruction with value 1000, or any instruction with operand 1000
+					if ((codeList[i].opcode == OpCodes.Ldc_I4 && codeList[i].operand is int intValue && intValue == 1000) ||
+						(codeList[i].operand is int intOp && intOp == 1000))
+					{
+						codeList[i] = FishTranspiler
+							.PropertyGetter(typeof(Settings), nameof(Settings.LoggingLimit))
+							.WithLabelsAndBlocks(codeList[i]);
+						found = true;
+						break;
+					}
+				}
+				
+				// If we didn't find the 1000 constant, just return original codes
+				if (!found)
+				{
+					Log.Warning("BetterLog: Could not find log limit constant (1000) in Notify_MessageReceivedThreadedInternal. The method structure may have changed.");
+					return codes;
+				}
+				
+				return codeList;
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"BetterLog: Transpiler failed for Log_Notify_MessageReceivedThreadedInternal_Modify_Patch: {ex}");
+				return codes;
+			}
 #else
 			return codes;
 #endif
@@ -321,8 +352,16 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes)
 		{
 #if V1_6
-			return codes.InsertAfter(static c => c == FishTranspiler.PropertyGetter(typeof(Log), nameof(Log.Messages)),
-				FishTranspiler.Call(FilteredMessages));
+			try
+			{
+				return codes.InsertAfter(static c => c == FishTranspiler.PropertyGetter(typeof(Log), nameof(Log.Messages)),
+					FishTranspiler.Call(FilteredMessages));
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"BetterLog: Transpiler failed for EditWindow_Log_DoMessagesListing_Patch: {ex}");
+				return codes;
+			}
 #else
 			return codes;
 #endif
@@ -352,44 +391,52 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions instructions)
 		{
 #if V1_6
-			return instructions
-				.ReplaceAt(static (codes, i)
-						=> codes[i] == _widget_ButtonText
+			try
+			{
+				return instructions
+					.ReplaceAt(static (codes, i)
+							=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-						&& i - 8 > 0
-						&& codes[i - 8]
+							&& i - 8 > 0
+							&& codes[i - 8]
 #else
-						&& i - 11 > 0
-						&& codes[i - 11]
+							&& i - 11 > 0
+							&& codes[i - 11]
 #endif
-						== FishTranspiler.String("Trace big"),
-					static code => FishTranspiler.Call(ShowMessagesButton).WithLabelsAndBlocks(code))
-				.ReplaceAt(static (codes, i)
-						=> codes[i] == _widget_ButtonText
+							== FishTranspiler.String("Trace big"),
+						static code => FishTranspiler.Call(ShowMessagesButton).WithLabelsAndBlocks(code))
+					.ReplaceAt(static (codes, i)
+							=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-						&& i - 8 > 0
-						&& codes[i - 8]
+							&& i - 8 > 0
+							&& codes[i - 8]
 #else
-						&& i - 11 > 0
-						&& codes[i - 11]
+							&& i - 11 > 0
+							&& codes[i - 11]
 #endif
-						== FishTranspiler.String("Trace medium"),
-					static code => FishTranspiler.Call(ShowWarningsButton).WithLabelsAndBlocks(code))
-				.ReplaceAt(static (codes, i)
-						=> codes[i] == _widget_ButtonText
+							== FishTranspiler.String("Trace medium"),
+						static code => FishTranspiler.Call(ShowWarningsButton).WithLabelsAndBlocks(code))
+					.ReplaceAt(static (codes, i)
+							=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-						&& i - 8 > 0
-						&& codes[i - 8]
+							&& i - 8 > 0
+							&& codes[i - 8]
 #else
-						&& i - 11 > 0
-						&& codes[i - 11]
+							&& i - 11 > 0
+							&& codes[i - 11]
 #endif
-						== FishTranspiler.String("Trace small"),
-					static code => FishTranspiler.Call(ShowErrorsButton).WithLabelsAndBlocks(code))
-				.InsertAfter(static c => c.opcode == OpCodes.Ldstr,
-					FishTranspiler.Call(Translator.TranslateSimple))
-				.Replace(static c => c.opcode == OpCodes.Ldstr && c.operand is string s && s != string.Empty,
-					static code => code.With(operand: ((string)code.operand).Replace(' ', '_')));
+							== FishTranspiler.String("Trace small"),
+						static code => FishTranspiler.Call(ShowErrorsButton).WithLabelsAndBlocks(code))
+					.InsertAfter(static c => c.opcode == OpCodes.Ldstr,
+						FishTranspiler.Call(Translator.TranslateSimple))
+					.Replace(static c => c.opcode == OpCodes.Ldstr && c.operand is string s && s != string.Empty,
+						static code => code.With(operand: ((string)code.operand).Replace(' ', '_')));
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"BetterLog: Transpiler failed for EditWindow_Log_DoWindowContents_Patch: {ex}");
+				return instructions;
+			}
 #else
 			return instructions;
 #endif

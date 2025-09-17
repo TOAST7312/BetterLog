@@ -1,5 +1,0 @@
-D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Debug\net48\1.6.csproj.AssemblyReference.cache
-D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Debug\net48\1.6.GeneratedMSBuildEditorConfig.editorconfig
-D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Debug\net48\1.6.AssemblyInfoInputs.cache
-D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Debug\net48\1.6.AssemblyInfo.cs
-D:\Games & Programs\Steam\steamapps\workshop\content\294100\2772559481\Source\obj\1.6\Debug\net48\1.6.csproj.CoreCompileInputs.cache

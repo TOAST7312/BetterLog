@@ -43,35 +43,28 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes, MethodBase method)
 		{
 #if V1_6
-			var codeList = codes.ToList();
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i] == FishTranspiler.Call(static () => new List<ListableOption>().Add(null!))
-					&& FindMenuButtonOptionsString(codeList, i))
+			return codes.ReplaceAt(static (codes, i)
+					=> codes[i] == FishTranspiler.Call(static () => new List<ListableOption>().Add(null!))
+					&& FindMenuButtonOptionsString(codes, i),
+				code => new[]
 				{
-					codeList.RemoveAt(i);
-					codeList.InsertRange(i, new[]
-					{
-						codeList[i],
-						FishTranspiler.FirstLocalVariable(method, typeof(List<ListableOption>)),
-						FishTranspiler.Call(AddNewButton)
-					});
-					break;
-				}
-			}
-			return codeList;
+					code,
+					FishTranspiler.FirstLocalVariable(method, typeof(List<ListableOption>)),
+					FishTranspiler.Call(AddNewButton)
+				});
 #else
 			return codes;
 #endif
 		}
 
-		private static bool FindMenuButtonOptionsString(List<CodeInstruction> codes, int i)
+		private static bool FindMenuButtonOptionsString(IEnumerable<CodeInstruction> codes, int i)
 		{
 #if V1_6
+			var codeList = codes.ToList();
 			for (; i > 1; i--)
 			{
-				if (codes[i].opcode.LoadsString())
-					return codes[i] == FishTranspiler.String("MenuButton-Options");
+				if (codeList[i].opcode.LoadsString())
+					return codeList[i] == FishTranspiler.String("MenuButton-Options");
 			}
 #endif
 			return false;
@@ -282,17 +275,9 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes)
 		{
 #if V1_6
-			var codeList = codes.ToList();
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i].operand is 1000)
-				{
-					codeList[i] = FishTranspiler
-						.PropertyGetter(typeof(Settings), nameof(Settings.LoggingLimit))
-						.WithLabelsAndBlocks(codeList[i]);
-				}
-			}
-			return codeList;
+			return codes.Replace(static code => code.operand is 1000, static code => FishTranspiler
+				.PropertyGetter(typeof(Settings), nameof(Settings.LoggingLimit))
+				.WithLabelsAndBlocks(code));
 #else
 			return codes;
 #endif
@@ -336,16 +321,8 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes)
 		{
 #if V1_6
-			var codeList = codes.ToList();
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i] == FishTranspiler.PropertyGetter(typeof(Log), nameof(Log.Messages)))
-				{
-					codeList.Insert(i + 1, FishTranspiler.Call(FilteredMessages));
-					break;
-				}
-			}
-			return codeList;
+			return codes.InsertAfter(static c => c == FishTranspiler.PropertyGetter(typeof(Log), nameof(Log.Messages)),
+				FishTranspiler.Call(FilteredMessages));
 #else
 			return codes;
 #endif
@@ -375,82 +352,44 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions instructions)
 		{
 #if V1_6
-			var codeList = instructions.ToList();
-			
-			// Replace Trace big button
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i] == _widget_ButtonText
+			return instructions
+				.ReplaceAt(static (codes, i)
+						=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-					&& i - 8 > 0
-					&& codeList[i - 8]
+						&& i - 8 > 0
+						&& codes[i - 8]
 #else
-					&& i - 11 > 0
-					&& codeList[i - 11]
+						&& i - 11 > 0
+						&& codes[i - 11]
 #endif
-					== FishTranspiler.String("Trace big"))
-				{
-					codeList[i] = FishTranspiler.Call(ShowMessagesButton).WithLabelsAndBlocks(codeList[i]);
-					break;
-				}
-			}
-			
-			// Replace Trace medium button
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i] == _widget_ButtonText
+						== FishTranspiler.String("Trace big"),
+					static code => FishTranspiler.Call(ShowMessagesButton).WithLabelsAndBlocks(code))
+				.ReplaceAt(static (codes, i)
+						=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-					&& i - 8 > 0
-					&& codeList[i - 8]
+						&& i - 8 > 0
+						&& codes[i - 8]
 #else
-					&& i - 11 > 0
-					&& codeList[i - 11]
+						&& i - 11 > 0
+						&& codes[i - 11]
 #endif
-					== FishTranspiler.String("Trace medium"))
-				{
-					codeList[i] = FishTranspiler.Call(ShowWarningsButton).WithLabelsAndBlocks(codeList[i]);
-					break;
-				}
-			}
-			
-			// Replace Trace small button
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i] == _widget_ButtonText
+						== FishTranspiler.String("Trace medium"),
+					static code => FishTranspiler.Call(ShowWarningsButton).WithLabelsAndBlocks(code))
+				.ReplaceAt(static (codes, i)
+						=> codes[i] == _widget_ButtonText
 #if !V1_5_OR_LATER
-					&& i - 8 > 0
-					&& codeList[i - 8]
+						&& i - 8 > 0
+						&& codes[i - 8]
 #else
-					&& i - 11 > 0
-					&& codeList[i - 11]
+						&& i - 11 > 0
+						&& codes[i - 11]
 #endif
-					== FishTranspiler.String("Trace small"))
-				{
-					codeList[i] = FishTranspiler.Call(ShowErrorsButton).WithLabelsAndBlocks(codeList[i]);
-					break;
-				}
-			}
-			
-			// Insert after Ldstr
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i].opcode == OpCodes.Ldstr)
-				{
-					codeList.Insert(i + 1, FishTranspiler.Call(Translator.TranslateSimple));
-					break;
-				}
-			}
-			
-			// Replace string operands
-			for (int i = 0; i < codeList.Count; i++)
-			{
-				if (codeList[i].opcode == OpCodes.Ldstr && codeList[i].operand is string s && s != string.Empty)
-				{
-					codeList[i] = codeList[i].With(operand: s.Replace(' ', '_'));
-				}
-			}
-			
-			return codeList;
+						== FishTranspiler.String("Trace small"),
+					static code => FishTranspiler.Call(ShowErrorsButton).WithLabelsAndBlocks(code))
+				.InsertAfter(static c => c.opcode == OpCodes.Ldstr,
+					FishTranspiler.Call(Translator.TranslateSimple))
+				.Replace(static c => c.opcode == OpCodes.Ldstr && c.operand is string s && s != string.Empty,
+					static code => code.With(operand: ((string)code.operand).Replace(' ', '_')));
 #else
 			return instructions;
 #endif
@@ -650,13 +589,11 @@ public class Patches : ClassWithFishPatches
 		public static CodeInstructions Transpiler(CodeInstructions codes, MethodBase method)
 		{
 #if V1_6
-			return new[]
-			{
-				FirstArgument(method, typeof(string)),
-				Return
-			}.Cast<CodeInstruction>();
+			yield return FirstArgument(method, typeof(string));
+			yield return Return;
 #else
-			return codes;
+			foreach (var code in codes)
+				yield return code;
 #endif
 		}
 	}

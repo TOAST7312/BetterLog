@@ -19,8 +19,5 @@
 		<Reference Include="1Fishery">
 			<HintPath>D:\Games &amp; Programs\Steam\steamapps\common\RimWorld\Mods\Fishery\1.6\Assemblies\1Fishery.dll</HintPath>
 		</Reference>
-		<Reference Include="FisheryLib">
-			<HintPath>D:\Games &amp; Programs\Steam\steamapps\common\RimWorld\Mods\Fishery\1.6\Assemblies\FisheryLib.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 </Project>

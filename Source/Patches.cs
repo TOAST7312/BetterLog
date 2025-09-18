@@ -252,17 +252,19 @@ public class Patches : ClassWithFishPatches
 	[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 	public class Log_Notify_MessageReceivedThreadedInternal_Modify_Patch : FishPatch
 	{
-		public override bool ShowSettings => false; // Disabled - the 1000 constant no longer exists in RimWorld 1.6
+		public override bool ShowSettings => !Get<Log_Notify_MessageReceivedThreadedInternal_Disable_Patch>().Enabled;
 		public override string Name { get; } = "Modify Log Limit";
 
 		public override string Description { get; }
-			= "RimWorld normally stops logging after 1000 messages. This allows changing that number. Use the slider "
-			+ "below to set the new value. (DISABLED: Not compatible with RimWorld 1.6)";
+			= "RimWorld normally stops logging after 10000 messages (1000 in older versions). This allows changing that number. Use the slider "
+			+ "below to set the new value.";
 
 		public override Delegate TargetMethodGroup { get; } = Log.Notify_MessageReceivedThreadedInternal;
 
 		public static CodeInstructions Transpiler(CodeInstructions codes)
-			=> codes; // Return original codes unchanged - the 1000 constant no longer exists in RimWorld 1.6
+			=> codes.Replace(static code => code.operand is 10000, static code => FishTranspiler
+				.PropertyGetter(typeof(Settings), nameof(Settings.LoggingLimit))
+				.WithLabelsAndBlocks(code));
 	}
 
 	[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
